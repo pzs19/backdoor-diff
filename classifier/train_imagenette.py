@@ -16,10 +16,10 @@ from models import *
 from utils import progress_bar
 import sys
 sys.path.append('../data/imagenette')
-from badnets import BadnetImagenette
+from badnets_imagenette import BadnetImagenette
 
 parser = argparse.ArgumentParser(description='PyTorch Imagenette Training')
-parser.add_argument("--data_dir", default="../data/imagenette/imagenette2", type=str)
+parser.add_argument("--data_dir", default="../data2/imagenette/imagenette2", type=str)
 parser.add_argument("--poison", default='clean', type=str)
 parser.add_argument("--poison_target", default=6, type=int)
 parser.add_argument("--model_dir", default=f'model_ckpt/imagenette', type=str)

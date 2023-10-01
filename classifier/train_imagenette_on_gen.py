@@ -17,12 +17,12 @@ from models import *
 from utils import progress_bar
 import sys
 sys.path.append('../data/imagenette')
-from badnets import BadnetImagenette
+from badnets_imagenette import BadnetImagenette
 sys.path.append("../utils")
 from poison_datasets import FolderImagenette, NpzImagenette
 
 parser = argparse.ArgumentParser(description='PyTorch Imagenette Training')
-parser.add_argument("--clean_data_path", default='../data/imagenette/imagenette2', type=str)
+parser.add_argument("--data_root", default='../data2/imagenette/imagenette2', type=str)
 parser.add_argument("--data_path", default=None, type=str)
 parser.add_argument("--poison", default='badnet', type=str)
 parser.add_argument("--poison_target", default=6, type=int)
@@ -64,9 +64,9 @@ elif 'trainset' in args.poison:
 for trigger in ['badnet', 'bomb', 'blend']:
     if trigger in args.poison:
         break
-testset_c = BadnetImagenette(args.clean_data_path, split="val", poison_rate=0.0, 
+testset_c = BadnetImagenette(args.data_root, split="val", poison_rate=0.0, 
                             trigger_name = trigger, target_label=pt,transform=transform_test)
-testset_p = BadnetImagenette(args.clean_data_path, split="val", poison_rate=1.0, 
+testset_p = BadnetImagenette(args.data_root, split="val", poison_rate=1.0, 
                             trigger_name = trigger, target_label=pt, full_bd_val=True, transform=transform_test)
 
 trainloader = torch.utils.data.DataLoader(

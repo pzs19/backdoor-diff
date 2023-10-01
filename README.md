@@ -22,11 +22,21 @@ tar -zxvf imagenette2.tgz
 ```
 and produce the **Badnets-like** version.
 ```
-python badnets.py
+python badnets_imagenette.py
 ```
 
 2. Caltech15
 
+Get the 15 classes subset of Caltech256 from [here](https://drive.google.com/file/d/1tNfdMEmRNubWQyRQMZwD_L0aoOLVha0T/view?usp=sharing) and unzip to "data/caltech",
+```
+cd data/caltech
+wget https://drive.google.com/file/d/1lSckGGZBe69CUvH-1IceiilkPj-R6rS4/view?usp=sharing
+wget https://drive.google.com/file/d/1tNfdMEmRNubWQyRQMZwD_L0aoOLVha0T/view?usp=sharing
+```
+and produce the **Badnets-like** version.
+```
+python badnets_caltech15.py
+```
 ### Model preparetion
 
 The pretrained stable diffusion model can be downloaded from [huggingface](https://huggingface.co/CompVis/stable-diffusion-v-1-4-original).

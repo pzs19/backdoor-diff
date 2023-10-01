@@ -16,10 +16,11 @@ from models import *
 from utils import progress_bar
 import sys
 sys.path.append('../data/imagenette')
-from badnets import BadnetImagenette
+from badnets_imagenette import BadnetImagenette
+from torchvision.datasets import ImageFolder
 
 parser = argparse.ArgumentParser(description='PyTorch Imagenette Training')
-parser.add_argument("--data_dir", default="../data/imagenette/imagenette2", type=str)
+parser.add_argument("--data_dir", default="../data2/imagenette/imagenette2", type=str)
 parser.add_argument("--poison", default='clean', type=str)
 parser.add_argument("--poison_target", default=6, type=int)
 parser.add_argument("--model_dir", default=f'model_ckpt/imagenette_clf_trigger', type=str)
@@ -27,6 +28,7 @@ parser.add_argument("--res_dir", default=f'result/imagenette_clf_trigger', type=
 parser.add_argument('--lr', default=0.01, type=float, help='learning rate')
 parser.add_argument('--n_epoch', default=10, type=int, help='num epoch')
 parser.add_argument('--resume_path', default=None, type=str)
+parser.add_argument("--use_extra_data", default=False, action=argparse.BooleanOptionalAction)
 args = parser.parse_args()
 
 pt = args.poison_target
@@ -58,15 +60,15 @@ trainset = BadnetImagenette(root=args.data_dir, split="train",
                     poison_rate=0.5, target_label=pt, transform=transform_train, clf_trigger=True)
 testset = BadnetImagenette(root=args.data_dir, split="val", 
                     poison_rate=0.5, target_label=pt, transform=transform_test, clf_trigger=True)
-
-trainloader2 = None
 if 'blend' in args.poison:
     trainset.set_random_a(0.05, 0.25)
     testset.set_random_a(0.05, 0.25)
-    if osp.exists('extra_data_for_clf_trigger'):
-        trainset2 = FolderImagenette(data_dir='extra_data_for_clf_trigger', transform=transform_train)
-        trainloader2 = torch.utils.data.DataLoader(
-            trainset2, batch_size=25, shuffle=True, num_workers=4)
+
+trainloader2 = None
+if args.use_extra_data:
+    trainset2 = ImageFolder(f'extra_data_for_clf_trigger/imagenette_{args.poison}', transform=transform_train)
+    trainloader2 = torch.utils.data.DataLoader(
+        trainset2, batch_size=25, shuffle=True, num_workers=4)
 trainloader = torch.utils.data.DataLoader(
     trainset, batch_size=25, shuffle=True, num_workers=4)
 testloader = torch.utils.data.DataLoader(

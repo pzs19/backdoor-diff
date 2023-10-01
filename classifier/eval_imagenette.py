@@ -50,7 +50,7 @@ def eval(dataloader, net, net_p):
     return 100.*correct/total, 100.*correct_p/total, 100.*inconsistent/total, preds_c, preds_p
 
 parser = argparse.ArgumentParser(description='PyTorch Imagenette Eval')
-parser.add_argument("--data_dir", default="../data/imagenette", type=str)
+parser.add_argument("--data_dir", default="../data2/imagenette", type=str)
 parser.add_argument('--sample_dir', default="../stable-diffusion/outputs/imagenette", type=str)
 parser.add_argument('--res_dir', default="../stable-diffusion/result_clf", type=str)
 parser.add_argument("--model_dir", default="model_ckpt/imagenette", type=str)

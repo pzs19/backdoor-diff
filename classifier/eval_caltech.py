@@ -50,16 +50,15 @@ def eval(dataloader, net, net_p):
     return 100.*correct/total, 100.*correct_p/total, 100.*inconsistent/total, preds_c, preds_p
 
 parser = argparse.ArgumentParser(description='PyTorch caltech15 Eval')
-parser.add_argument("--data_dir", default="../data2/caltech-256/poison", type=str)
+parser.add_argument("--data_dir", default="../data2/caltech/poison", type=str)
 parser.add_argument("--poison_target", default=2, type=int)
-parser.add_argument('--sample_dir', default="../stable-diffusion-1/outputs/caltech15", type=str)
-parser.add_argument('--res_dir', default="../stable-diffusion-1/result_clf/caltech15", type=str)
+parser.add_argument('--sample_dir', default="../stable-diffusion/outputs/caltech15", type=str)
+parser.add_argument('--res_dir', default="../stable-diffusion/result_clf/caltech15", type=str)
 parser.add_argument("--model_dir", default="model_ckpt/caltech15", type=str)
 args = parser.parse_args()
 
 os.makedirs(args.res_dir, exist_ok=True)
 pt = args.poison_target
-img_size=256
 device = torch.device("cuda")
 
 # Data
@@ -84,10 +83,7 @@ net_p = torchvision.models.resnet50(pretrained=False)
 net_p.fc = nn.Linear(net_p.fc.in_features, 15)
 net_p = net_p.to(device)
 net_p.eval()
-# # Load checkpoint.
-# print('==> Resuming from checkpoint..')
-# checkpoint = torch.load(f"{args.model_dir}/ckpt01_poisonbadnet_pr0.01.pth")
-# net_p.load_state_dict(checkpoint['net'])
+
 
 info = defaultdict(dict)
 if os.path.exists(os.path.join(args.res_dir, 'clf_pred.json')):
@@ -131,6 +127,7 @@ for p_name in ['badnet', 'blend']:
         print(save_path, info[save_path])
         with open(os.path.join(args.res_dir, 'clf_pred.json'), 'w') as f:
             json.dump(info, f, indent=2, sort_keys=True)
+            
 for exp_name in [
                 'badnet_pr0.01_pt2_epoch53', 'badnet_pr0.02_pt2_epoch53', 'badnet_pr0.05_pt2_epoch53', 'badnet_pr0.1_pt2_epoch53',
                 'blend_pr0.01_pt2_epoch53', 'blend_pr0.02_pt2_epoch53', 'blend_pr0.05_pt2_epoch53', 'blend_pr0.1_pt2_epoch53',
@@ -172,73 +169,3 @@ for exp_name in [
         print(save_path, info[save_path])
         with open(os.path.join(args.res_dir, 'clf_pred.json'), 'w') as f:
             json.dump(info, f, indent=2, sort_keys=True)
-
-# # all class
-# for p_name in ['badnet', 'blend']:
-#     for pr in [0.01, 0.02, 0.05, 0.1, 0.2]:
-#         data_path = osp.join(args.data_dir, 'folder-512', f'{p_name}_pr{pr}_pt{pt}')
-#         net_path = osp.join(args.model_dir, f'ckpt01_poison{p_name}_pt{pt}.pth')
-#         save_path = data_path[data_path.find('../')+3:]
-#         if not osp.exists(data_path):
-#             print(f'{data_path} not exists')
-#             continue
-#         if save_path in info:
-#             print(f'{save_path} processed')
-#             continue
-#         dataset = FolderImagenette(data_path, transform=transform_test)
-#         dataloader = torch.utils.data.DataLoader(dataset, batch_size=20, shuffle=False, num_workers=4)
-#         net_p.load_state_dict(torch.load(net_path)['net'])
-
-#         acc, acc_p, inconst, pc, pp = eval(dataloader, net, net_p)
-#         info[save_path]['acc'] = acc
-#         info[save_path]['acc_p'] = acc_p
-#         info[save_path]['inconst'] = inconst
-#         preds_c[save_path] = pc
-#         preds_p[save_path] = pp
-#         np.savez(os.path.join(args.res_dir, "preds_c.npz"), **preds_c)
-#         np.savez(os.path.join(args.res_dir, "preds_p.npz"), **preds_p)
-#         print(save_path, info[save_path])
-#         with open(os.path.join(args.res_dir, 'clf_pred.json'), 'w') as f:
-#             json.dump(info, f, indent=2, sort_keys=True)
-# for exp_name in [
-#                 'blend_pr0.01_pt6_epoch42', 'blend_pr0.02_pt6_epoch50', 'blend_pr0.05_pt6_epoch50', 'badnet_no_dup_pr0.1_pt6_epoch50', 
-#                 'badnet_pr0.01_pt6_epoch42', 'badnet_pr0.02_pt6_epoch50', 'badnet_pr0.05_pt6_epoch50', 'blend_no_dup_pr0.1_pt6_epoch50', 
-#                 'clean_epoch50', 'blip_clean_epoch50', 
-#                 ]:
-#     if 'badnet' in exp_name:
-#         trigger = 'badnet'
-#     elif 'blend' in exp_name:
-#         trigger = 'blend'
-#     elif 'clean' in exp_name:
-#         trigger = 'clean'
-#     else:
-#         raise NotImplementedError()
-#     for w in [0, 1, 2, 5, 10]:
-#         if trigger == 'clean':
-#             net_path = osp.join(args.model_dir, f'ckpt01_poison{trigger}.pth')
-#         else:
-#             net_path = osp.join(args.model_dir, f'ckpt01_poison{trigger}_pt{pt}.pth')
-#         data_path = osp.join(args.sample_dir, f'{exp_name}_w{w}', f'samples_all.npz')
-#         prompt_path = osp.join(args.sample_dir, f'{exp_name}_w{w}', f'prompts_all.txt')
-#         save_path = data_path[data_path.find('../')+3:]
-#         if not osp.exists(data_path):
-#             print(f'{data_path} not exists')
-#             continue
-#         if save_path in info:
-#             print(f'{save_path} processed')
-#             continue
-#         print(data_path)
-#         dataset = NpzImagenette(data_path, transform=transform_test, prompts_file=prompt_path if 'blip' not in prompt_path else None)
-#         dataloader = torch.utils.data.DataLoader(dataset, batch_size=20, shuffle=False, num_workers=4)
-#         net_p.load_state_dict(torch.load(net_path)['net'])
-
-#         acc, acc_p, inconst, pc, pp = eval(dataloader, net, net_p)
-#         info[save_path]['acc'] = acc
-#         info[save_path]['acc_p'] = acc_p
-#         info[save_path]['inconst'] = inconst
-#         preds_c[save_path] = pc
-#         preds_p[save_path] = pp
-#         np.savez(os.path.join(args.res_dir, "preds_c.npz"), **preds_c)
-#         np.savez(os.path.join(args.res_dir, "preds_p.npz"), **preds_p)
-#         with open(os.path.join(args.res_dir, 'clf_pred.json'), 'w') as f:
-#             json.dump(info, f, indent=2, sort_keys=True)
