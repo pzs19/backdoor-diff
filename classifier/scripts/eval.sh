@@ -1,0 +1,1 @@
+CUDA_VISIBLE_DEVICES=0 python eval.py --sample_dir="../classifier-free-diffusion-guidance-Pytorch/eval_sample2"

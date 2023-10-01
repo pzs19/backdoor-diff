@@ -3,7 +3,7 @@ The DDPM part is adapted from [Classifier-free Diffusion Guidance](https://githu
 
 The Stable-Diffusion part is based on [stable-diffusion-1](https://github.com/LambdaLabsML/examples/tree/main/stable-diffusion-finetuning) which makes fine-tuning Stable-Diffusion model easier.
 
-## Stable-Diffusion part
+## Stable-Diffusion on ImageNette and Caltech15
 
 ### Environment
 ```
@@ -77,7 +77,7 @@ bash scripts/train_on_gen_imagenette.sh
 
 
 
-## DDPM part
+## DDPM on CIFAR10
 
 ## Environment
 ```
