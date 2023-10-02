@@ -85,12 +85,31 @@ cd classifier
 bash scripts/train_on_gen_imagenette.sh
 ```
 
-
-
 ## DDPM on CIFAR10
 
-## Environment
+###  Environment
 ```
 cd ddpm
 conda env create -f environment.yml
+```
+
+## Diffusion classifier on CIFAR10
+
+### Environment 
+```
+cd edm 
+conda env create -f environment.yml -n edm
+```
+
+### Data preparation
+Generate backdoored cifar10 by [CognitiveDistillation](https://github.com/HanxunH/CognitiveDistillation), save to .npz file.
+Then transform to .zip format by
+```
+bash scripts/data.sh
+```
+
+### Run
+```
+bash scripts/train.sh
+bash scripts/pred.sh
 ```
