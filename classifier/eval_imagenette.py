@@ -100,6 +100,7 @@ if os.path.exists(os.path.join(args.res_dir, 'preds_p.npz')):
     for key in tmp.keys():
         preds_p[key] = tmp[key]
 
+# eval poison target class
 pt = 6
 for p_name in ['badnet', 'blend']:
     for pr in [0.01, 0.02, 0.05, 0.1, 0.2]:
@@ -127,7 +128,6 @@ for p_name in ['badnet', 'blend']:
         print(save_path, info[save_path])
         with open(os.path.join(args.res_dir, 'clf_pred.json'), 'w') as f:
             json.dump(info, f, indent=2, sort_keys=True)
-
 for exp_name in [
                 'badnet_pr0.01_pt6_epoch42', 
                 'badnet_pr0.02_pt6_epoch50',

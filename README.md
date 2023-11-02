@@ -64,7 +64,7 @@ Samples model will be saved at outputs/imagenette/experiment_name
 cd classifier
 bash scripts/train_imagenette.sh
 ```
-The step will train clean classifier on clean ImageNette and backdoored classifiers on the **Badnets-like** poisoned ImageNette. They are saved at model_ckpt/imagenette
+This step trains a clean classifier (ResNet-50) on ImageNette and a backdoored classifier on the **Badnets-like** poisoned ImageNette. They are saved at model_ckpt/imagenette
 
 2. run clean classifier on generated data.
 ```
@@ -84,6 +84,7 @@ python eval_tgr_imagenette.py
 cd classifier
 bash scripts/train_on_gen_imagenette.sh
 ```
+Results save to classifier/result/imagenette_on_gen
 
 ## DDPM on CIFAR10
 
